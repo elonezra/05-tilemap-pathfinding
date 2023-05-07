@@ -38,11 +38,16 @@ public class TargetMover: MonoBehaviour {
 
     private TilemapGraph tilemapGraph = null;
     private float timeBetweenSteps;
-
+    public TilemapGraph GetTilemapGraph()
+    {
+        return tilemapGraph;
+    }
     protected virtual void Start() {
         tilemapGraph = new TilemapGraph(tilemap, allowedTiles.Get());
         timeBetweenSteps = 1 / speed;
         StartCoroutine(MoveTowardsTheTarget());
+        Debug.Log("game object: " + gameObject.name);
+
     }
 
     IEnumerator MoveTowardsTheTarget() {

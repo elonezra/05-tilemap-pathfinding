@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections;
-
+using System.CodeDom.Compiler;
 
 /**
  * This class demonstrates the CaveGenerator on a Tilemap.
@@ -32,6 +32,8 @@ public class TilemapCaveGenerator: MonoBehaviour {
     [Tooltip("For how long will we pause between each simulation step so we can look at the result?")]
     [SerializeField] float pauseTime = 1f;
 
+    public bool isBaked = false;
+
     private CaveGenerator caveGenerator;
 
     void Start()  {
@@ -47,7 +49,22 @@ public class TilemapCaveGenerator: MonoBehaviour {
         //Start the simulation
         StartCoroutine(SimulateCavePattern());
     }
+    public void generate()
+    {
+        isBaked = false;
+        //To get the same random numbers each time we run the script
+        Random.InitState(100);
 
+        caveGenerator = new CaveGenerator(randomFillPercent, gridSize);
+        caveGenerator.RandomizeMap();
+
+        //For testing that init is working
+        GenerateAndDisplayTexture(caveGenerator.GetMap());
+
+        //Start the simulation
+        StartCoroutine(SimulateCavePattern());
+        
+    }
 
     //Do the simulation in a coroutine so we can pause and see what's going on
     private IEnumerator SimulateCavePattern()  {
@@ -61,6 +78,7 @@ public class TilemapCaveGenerator: MonoBehaviour {
             GenerateAndDisplayTexture(caveGenerator.GetMap());
         }
         Debug.Log("Simulation completed!");
+        isBaked = true;
     }
 
 

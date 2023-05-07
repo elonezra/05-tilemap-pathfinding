@@ -1,28 +1,57 @@
-# Unity week 5: Two-dimensional scene-building and path-finding
+# H.W 7
 
-A project with step-by-step scenes illustrating how to construct a 2D scene using tilemaps,
-and how to do path-finding using the BFS algorithm.
+הפרויקט הבא הוא שיעורי הבית של שבוע 7, שאלה 2.
 
-Text explanations are available 
-[here](https://github.com/gamedev-at-ariel/gamedev-5782) in folder 07.
+בחלק זה בחרתי את סעיף ב בו עלינו היה לתקן את המצב בו מפה שמוגרלת לא תגרום לשחקן להיות תקוע במפה בטווח של 100 משבצות.
+תיקנתי את הפרויקט כך שכל עוד אין לשחקן אפשרות להגיע לאחד הגבולות המשחק יגריל מפה מחדש.
 
-## Cloning
-To clone the project, you may need to install git lfs first:
+השינוייים שביצעתי הם בסקריפט שבניתי באופן ספציפי אותו ניתן לראות script>H.W
 
-    git lfs install 
+הסקריפט עובד באופן הבא 
 
+```
+    void Update()
+    {
+        if(!infunction) {
+            infunction = true;
+            run_generating();
+                
+        }
+    }
+```
+פונקציית ה update תיקרא לפונקציית run_generating כל עוד הוא נקרא בפעם הראשונה.
 
-## Credits
+```
+    private void run_generating()
+    {
+        ....
 
-Graphics:
-* [Ultima 4 Graphics](https://github.com/jahshuwaa/u4graphics) by Joshua Steele.
+        for(j = 2;j<98;j++)
+        {
+            target = new Vector3Int(2, j, 0);
+            Debug.Log("e_debug target: " + target.ToString());
+            List<Vector3Int> shortestPath = BFS.GetPath(graph, start, target, 1000);
+            Debug.Log("e_debug count: " + shortestPath.Count.ToString());
+            if (shortestPath.Count > 2)
+            {
+                return;//
+            }
+        }
+        for (j = 2; j < 98; j++)
+        {
+            target = new Vector3Int(98, j, 0);
+            Debug.Log("e_debug target: " + target.ToString());
+            List<Vector3Int> shortestPath = BFS.GetPath(graph, start, target, 1000);
+            Debug.Log("e_debug count: " + shortestPath.Count.ToString());
+            if (shortestPath.Count > 2)
+            {
+                return;//
+            }
+        }
+        
+        ...
 
-Online course:
-* [Unity 2D](https://www.udemy.com/course/unitycourse/learn/lecture/10246496), a Udemy course by Gamedev.tv.
-* [Unity RPG](https://www.gamedev.tv/p/unity-rpg/?product_id=1503859&coupon_code=JOINUS).
-
-Procedural generation:
-* [Habrador - Unity Programming Patterns](https://github.com/Habrador/Unity-Programming-Patterns#7-double-buffer)
-
-Programming:
-* Erel Segal-Halevi
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+```
+הפונקציית run_generating מפעילה 4 לולאות בהן נבדק באמצעות אלגוריתם הBFS האם יש מסלול מהשחקן לאחד הדפנות אם יש לפחות מסלול אחד, הפונקציה מפסיקה את פעולתה ונותנת לשחקן לשחק. אחרת תיטען הסצנה מחדש והסקריפט יתחיל מההתחלה.
